@@ -114,3 +114,169 @@ The first command will add and stage all files in your project directory that ar
 Hop over to your preferred git hosting provider ([Github](https://github.com) for example) and create a new repository to host this project. Make sure the default branch is se tto the same name as the branch on your local machine to avoid any confusion.
 
 On Github you can change your global default branch name to whatever you like by going to:
+
+### ESLint
+
+We'll begin with ESLint, which is easy because it automatically comes installed and pre-configured with Next.js projects.
+
+We are just going to add a little bit of extra configuration and make it a bit stricter than it is by default. If you disagree with any of the rules it sets, no need to worry, it's very easy to disable any of them manually. We configure everything in `.eslintrc.json` which should already exist in your root directory:
+
+`.eslintrc.js`
+
+```js
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+  },
+  extends: [
+    'airbnb',
+    'prettier',
+    'plugin:react/recommended',
+    'plugin:import/typescript',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.tsx', '.ts', '.js', '.json'],
+      },
+      alias: [
+        ['src', './src'],
+        ['server', './server'],
+      ],
+    },
+  },
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 12,
+    sourceType: 'module',
+  },
+  plugins: ['react', '@typescript-eslint', 'react-hooks'],
+  rules: {
+    semi: 0,
+    indent: 0,
+    'react/jsx-filename-extension': 0,
+    'react/prop-types': 0,
+    'react/jsx-props-no-spreading': 0,
+    'react/require-default-props': 0,
+
+    'jsx-a11y/click-events-have-key-events': 0,
+    'jsx-a11y/no-static-element-interactions': 0,
+    'jsx-a11y/no-noninteractive-element-interactions': 0,
+    'jsx-a11y/anchor-is-valid': 0,
+
+    'no-use-before-define': 0,
+    'no-unused-vars': 0,
+    'no-param-reassign': 0,
+    'implicit-arrow-linebreak': 0,
+    'consistent-return': 0,
+    'arrow-parens': 0,
+    'object-curly-newline': 0,
+    'operator-linebreak': 0,
+    'import/no-extraneous-dependencies': 0,
+    'import/extensions': 0,
+    'import/no-unresolved': 0,
+    'import/prefer-default-export': 0,
+
+    '@typescript-eslint/ban-ts-comment': 0,
+    '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 0,
+
+    'no-underscore-dangle': 0,
+    'react/function-component-definition': 0,
+    'react/react-in-jsx-scope': 0,
+    '@typescript-eslint/ban-types': 0,
+    '@typescript-eslint/no-empty-interface': 0,
+    'arrow-body-style': 0,
+    '@typescript-eslint/no-explicit-any': 0,
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
+    'import/no-cycle': 0,
+    'prefer-arrow-callback': 0,
+  },
+};
+```
+
+```
+yarn add eslint-config-airbnb
+yarn add eslint-config-next
+yarn add eslint-config-prettier
+yarn add eslint-import-resolver-alias
+yarn add eslint-import-resolver-typescript
+yarn add eslint-plugin-import
+yarn add eslint-plugin-jest
+yarn add eslint-plugin-jsx-a11y
+yarn add eslint-plugin-react
+yarn add eslint-plugin-react-hooks
+yarn add @typescript-eslint/eslint-plugin
+yarn add @typescript-eslint/parser
+```
+
+In the above small code example we have added a few additional defaults, we have said that `React` will always be defined even if we don't specifically import it, and I have added a personal custom rule that I like which allows you to prefix variables with an underscore \_ if you have declared them but not used them in the code.
+
+I find that scenario comes up often when you are working on a feature and want to prepare variables for use later, but have not yet reached the point of implementing them.
+
+You can test out your config by running:
+
+```
+yarn lint
+```
+
+You should get a message like:
+
+```
+✔ No ESLint warnings or errors
+Done in 1.47s.
+```
+
+If you get any errors then ESLint is quite good at explaining clearly what they are. If you encounter a rule you don't like you can disable it in "rules" by simply setting it to 1 (warning) or 0 (ignore) like so:
+
+```json
+  "rules": {
+    "no-unused-vars": 0, // As example: Will never bug you about unused variables again
+  }
+```
+
+Let's make a commit at this point with the message `build: configure eslint`
+
+### Prettier
+
+Prettier will take care of automatically formatting our files for us. Let's add it to the project now.
+
+It's only needed during development, so I'll add it as a `devDependency` with `-D`
+
+```
+yarn add -D prettier
+```
+
+I also recommend you get the [Prettier VS Code extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) so that VS Code can handle the formatting of the files for you and you don't need to rely on the command line tool. Having it installed and configured in your project means that VSCode will use your project's settings, so it's still necessary to add it here.
+
+We'll create two files in the root:
+
+`.prettierrc`
+
+```.prettierrc
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": true
+}
+```
+
+Those values are entirely at your discretion as to what is best for your team and project.
+
+`.prettierignore`
+
+```
+.yarn
+.next
+dist
+node_modules
+```
