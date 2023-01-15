@@ -442,3 +442,73 @@ The above will tell VS Code to use your Prettier extension as the default format
 Very handy stuff and just another thing you no longer need to think about so you can focus on the important things like solving business problems.
 
 I'll now make a commit with message `build: implement vscode project settings`.
+
+## Debugging
+
+Let's set up a convenient environment for debugging our application in case we run into any issues during development.
+
+Inside of your `.vscode` directory create a `launch.json` file:
+
+`launch.json`
+
+```json
+{
+  "version": "0.1.0",
+  "configurations": [
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev"
+    },
+    {
+      "name": "Next.js: debug client-side",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:3000"
+    },
+    {
+      "name": "Next.js: debug full stack",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "console": "integratedTerminal",
+      "serverReadyAction": {
+        "pattern": "started server on .+, url: (https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    }
+  ]
+}
+```
+
+With that script in place you have three choices for debugging. Click the little "bug & play icon" on the left of VS Code or press `Ctrl + Shift + D` to access the debugging menu. You can select which script you want to run and start/stop it with the start/stop buttons.
+
+![VS Code Debugger](https://res.cloudinary.com/dqse2txyi/image/upload/v1649168143/blogs/nextjs-fullstack-app-template/vscode-debugger_x1puqk.png)
+
+In addition to this, or if you are not using VS Code, we can also set up some helpful debugging scripts in your project.
+
+First we will install the [cross-env](https://www.npmjs.com/package/cross-env) which will; be necessary to set environment variables if you have teammates working on different environments (Windows, Linux, Mac, etc).
+
+```
+yarn add -D cross-env
+```
+
+With that package installed we can update our `package.json` `dev` script to look like the following:
+
+`package.json`
+
+```json
+{
+  ...
+  "scripts": {
+    ...
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
+  },
+}
+```
+
+This will allow you to log server data in the browser while working in dev mode, making it easier to debug issues.
+
+At this stage I'll be making a new commit with message `build: add debugging configuration`
